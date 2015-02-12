@@ -384,8 +384,8 @@ function admin_checkAndCreateResellerAccount()
 			array(
 				'username' => $data['admin_name'],
 				'password' => $data['password'],
-				'firstName' => $data['fname'],
-				'lastName' => $data['lname'],
+				'firstname' => $data['fname'],
+				'lastname' => $data['lname'],
 				'gender' => $data['gender'],
 				'firm' => $data['firm'],
 				'zip' => $data['zip']
@@ -635,11 +635,11 @@ function admin_checkAndCreateResellerAccount()
 			$eventManager->dispatch(
 				iMSCP_Events::onAfterAddUser,
 				array(
-				  'resellerid' => $resellerId,
+				  'userid' => $resellerId,
 				  'username' => $data['admin_name'],
 					'password' => $data['password'],
-					'firstName' => $data['fname'],
-					'lastName' => $data['lname'],
+					'firstname' => $data['fname'],
+					'lastname' => $data['lname'],
 					'gender' => $data['gender'],
 					'firm' => $data['firm'],
 					'zip' => $data['zip'],

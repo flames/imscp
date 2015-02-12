@@ -132,7 +132,35 @@ function reseller_generatePage($tpl)
  */
 function reseller_updateUserData($adminId)
 {
-	iMSCP_Events_Aggregator::getInstance()->dispatch(iMSCP_Events::onBeforeEditUser, array('userid' => $adminId));
+	$eventManager = iMSCP_Events_Aggregator::getInstance();
+
+	$eventManager->dispatch(
+		iMSCP_Events::onBeforeEditUser,
+		$eventManager->prepareArgs(
+		  array(
+				'userid' => $adminId,
+		  	'username' => $adminName,
+		  	'domainname' => $dmnName,
+		  	'createdby' => $resellerId,
+		  	'domainexpire' => $dmnExpire,
+		  	'domainip' => $domainIp,
+		  	'email' => $email,
+		  	'password' => $password,
+		  	'firstname' => $firstName,
+		  	'lastname' => $lastName,
+		  	'gender' => $gender,
+		  	'firm' => $firm,
+		  	'zip' => $zip,
+		  	'city' => $city,
+		  	'state' => $state,
+		  	'country' => $country,
+		  	'phone' => $phone,
+		  	'fax' => $fax,
+		  	'street1' => $street1,
+		  	'street2' => $street2
+		  )
+		)
+	);
 
 	global $adminName, $email, $customerId, $firstName, $lastName, $firm, $zip, $gender, $city, $state, $country,
 		$street1, $street2, $phone, $fax, $password, $passwordRepeat;
@@ -192,7 +220,30 @@ function reseller_updateUserData($adminId)
 		exec_query('DELETE FROM login WHERE user_name = ?', $adminName);
 	}
 
-	iMSCP_Events_Aggregator::getInstance()->dispatch(iMSCP_Events::onAfterEditUser, array('userid' => $adminId));
+	$eventManager->dispatch(
+		iMSCP_Events::onAfterEditUser, array(
+			'userid' => $adminId,
+			'username' => $adminName,
+			'domainname' => $dmnName,
+			'createdby' => $resellerId,
+			'domainexpire' => $dmnExpire,
+			'domainip' => $domainIp,
+			'email' => $email,
+			'password' => $password,
+			'firstname' => $firstName,
+			'lastname' => $lastName,
+			'gender' => $gender,
+			'firm' => $firm,
+			'zip' => $zip,
+			'city' => $city,
+			'state' => $state,
+			'country' => $country,
+			'phone' => $phone,
+			'fax' => $fax,
+			'street1' => $street1,
+			'street2' => $street2
+		)
+	);
 
 	set_page_message(tr('User data successfully updated'), 'success');
 	write_log("{$_SESSION['user_logged']} updated data for $adminName.", E_USER_NOTICE);

@@ -101,8 +101,8 @@ function add_user($tpl)
 					array(
 						'username' => $username,
 						'password' => $upass,
-						'firstName' => $fname,
-						'lastName' => $lname,
+						'firstname' => $fname,
+						'lastname' => $lname,
 						'gender' => $gender,
 						'firm' => $firm,
 						'zip' => $zip,
@@ -153,11 +153,11 @@ function add_user($tpl)
 			$eventManager->dispatch(
 				iMSCP_Events::onAfterAddUser,
 				array(
-					'userId' => $new_admin_id,
+					'userid' => $new_admin_id,
 					'username' => $username,
 					'password' => $upass,
-					'firstName' => $fname,
-					'lastName' => $lname,
+					'firstname' => $fname,
+					'lastname' => $lname,
 					'gender' => $gender,
 					'firm' => $firm,
 					'zip' => $zip,

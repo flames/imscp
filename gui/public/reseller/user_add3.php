@@ -145,8 +145,10 @@ function reseller_generatePage($tpl)
  */
 function reseller_addCustomer()
 {
+	$eventManager = iMSCP_Events_Aggregator::getInstance();
+
 	global $hpId, $dmnName, $dmnExpire, $domainIp, $adminName, $email, $password, $customerId, $firstName, $lastName,
-		$gender, $firm, $zip, $city, $state, $country, $phone, $fax,  $street1,  $street2 ;
+		$gender, $firm, $zip, $city, $state, $country, $phone, $fax,  $street1,  $street2;
 
 	$resellerId = intval($_SESSION['user_id']);
 
@@ -189,13 +191,31 @@ function reseller_addCustomer()
 	$db = iMSCP_Database::getInstance();
 
 	try {
-		iMSCP_Events_Aggregator::getInstance()->dispatch(
-			iMSCP_Events::onBeforeAddDomain,
-			array(
-				'domainname' => $dmnName,
-				'createdby' => $resellerId,
-				'customerid' => $customerId,
-				'customeremail' => $email
+		$eventManager->dispatch(
+			iMSCP_Events::onBeforeAddUser,
+			$eventManager->prepareArgs(
+				array(
+		  		'username' => $adminName,
+		  		'domainname' => $dmnName,
+		  		'createdby' => $resellerId,
+		  		'domainexpire' => $dmnExpire,
+		  		'domainip' => $domainIp,
+		  		'email' => $email,
+		  		'password' => $password,
+		  		'firstname' => $firstName,
+		  		'lastname' => $lastName,
+		  		'gender' => $gender,
+		  		'firm' => $firm,
+		  		'zip' => $zip,
+		  		'city' => $city,
+		  		'state' => $state,
+		  		'country' => $country,
+		  		'phone' => $phone,
+		  		'fax' => $fax,
+		  		'street1' => $street1,
+		  		'street2' => $street2
+		  		//More parameters will be added later. Limits, technical settings and such...
+		  	)
 			)
 		);
 
@@ -286,14 +306,30 @@ function reseller_addCustomer()
 
 		$db->commit();
 
-		iMSCP_Events_Aggregator::getInstance()->dispatch(
-			iMSCP_Events::onAfterAddDomain,
+		$eventManager->dispatch(
+			iMSCP_Events::onAfterAddUser,
 			array(
+				'userid' => $dmnId,
+				'username' => $adminName,
 				'domainname' => $dmnName,
 				'createdby' => $resellerId,
-				'customerid' => $recordId,
-				'customeremail' => $email,
-				'domainid' => $dmnId
+				'domainexpire' => $dmnExpire,
+				'domainip' => $domainIp,
+				'email' => $email,
+				'password' => $password,
+				'firstname' => $firstName,
+				'lastname' => $lastName,
+				'gender' => $gender,
+				'firm' => $firm,
+				'zip' => $zip,
+				'city' => $city,
+				'state' => $state,
+				'country' => $country,
+				'phone' => $phone,
+				'fax' => $fax,
+				'street1' => $street1,
+				'street2' => $street2
+				//More parameters will be added later. Limits, technical settings and such...
 			)
 		);
 

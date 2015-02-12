@@ -279,7 +279,7 @@ function &reseller_getData($domainId, $forUpdate = false)
 					$data[$customerLimit] = clean_input($_POST[$customerLimit]);
 				}
 			}
-			
+
 			$data['domain_ip_id'] = (isset($_POST['domain_ip_id']))
 				? clean_input($_POST['domain_ip_id']) : $data['domain_ip_id'];
 
@@ -624,6 +624,8 @@ function reseller_checkAndUpdateData($domainId, $recoveryMode = false)
 	/** @var $cfg iMSCP_Config_Handler_File */
 	$cfg = iMSCP_Registry::get('config');
 
+	$eventManager = iMSCP_Events_Aggregator::getInstance();
+
 	/** @var $db iMSCP_Database */
 	$db = iMSCP_Database::getInstance();
 
@@ -907,8 +909,14 @@ function reseller_checkAndUpdateData($domainId, $recoveryMode = false)
 				return true;
 			}
 
-			iMSCP_Events_Aggregator::getInstance()->dispatch(
-				iMSCP_Events::onBeforeEditDomain, array('domainid' => $domainId)
+			$eventManager->dispatch(
+				iMSCP_Events::onBeforeEditDomain,
+				$eventManager->prepareArgs(
+					array(
+					  'domainid' => $dmnId
+					  //More parameters will be added later. Limits, technical settings and such...
+					)
+				)
 			);
 
 			// Start transaction
@@ -1014,7 +1022,7 @@ function reseller_checkAndUpdateData($domainId, $recoveryMode = false)
 			if($data['fallback_mail_quota'] != ($data['mail_quota'] * 1048576)) {
 				sync_mailboxes_quota($domainId, $data['mail_quota'] * 1048576);
 			}
-			
+
 			// Update domain alias IP if needed
 			if ($data['domain_ip_id'] != $data['fallback_domain_ip_id']) {
 				if($data['domain_alias_limit'] != '-1') {
@@ -1055,8 +1063,11 @@ function reseller_checkAndUpdateData($domainId, $recoveryMode = false)
 
 			$db->commit();
 
-			iMSCP_Events_Aggregator::getInstance()->dispatch(
-				iMSCP_Events::onAfterEditDomain, array('domainid' => $domainId)
+			$eventManager->dispatch(
+				iMSCP_Events::onAfterEditDomain, array(
+					'domainid' => $dmnId
+					//More parameters will be added later. Limits, technical settings and such...
+				)
 			);
 
 			if ($daemonRequest) {
